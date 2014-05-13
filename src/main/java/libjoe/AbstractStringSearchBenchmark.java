@@ -32,7 +32,7 @@ import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
 
-public class MyBenchmark {
+public class AbstractStringSearchBenchmark {
 
 	@GenerateMicroBenchmark
 	public void testMethod() throws InterruptedException {
@@ -40,7 +40,7 @@ public class MyBenchmark {
 	}
 
 	public static void main(String[] args) throws RunnerException {
-		Options options = new OptionsBuilder().include(".*" + MyBenchmark.class.getSimpleName() + ".*")
+		Options options = new OptionsBuilder().include(".*" + AbstractStringSearchBenchmark.class.getSimpleName() + ".*")
 				.warmupIterations(2)
 				.measurementIterations(2)
 				.forks(1)

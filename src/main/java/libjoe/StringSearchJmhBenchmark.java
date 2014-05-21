@@ -44,10 +44,11 @@ public class StringSearchJmhBenchmark {
 		}
 	}
 
-	@Param
-	public BenchmarkCases benchmarkCase;
-	@Param
-	private StringSearchAlgorithms algorithm;
+	@Param(value = { "ONE_CHAR_in_SENTENCE", "WORD_in_SENTENCE", "SENTENCE_in_LONGER_SENTENCE", "SENTENCE_in_SHAKESPEARE", "LONG_MISSING_in_LONGER",
+			"PARAGRAPH_in_SHAKESPEARE" })
+	public String benchmarkCase;
+	@Param(value = { "STRING_INDEX_OF", "BRUTE_FORCE", "RABIN_KARP", "KNUTH_MORRIS_PRATT", "AHO_CORASICK_LIB" })
+	public String algorithm;
 
 	private StringMatcher matcher;
 	private CharSequence haystack;
@@ -55,11 +56,11 @@ public class StringSearchJmhBenchmark {
 
 	@Setup
 	public void setup() {
-		needle = benchmarkCase.needle;
-		matcher = algorithm.get().matchPattern(needle);
-		haystack = benchmarkCase.haystack;
+		BenchmarkCases benchmarkCaseResolved = BenchmarkCases.valueOf(benchmarkCase);
+		needle = benchmarkCaseResolved.needle;
+		matcher = StringSearchAlgorithms.valueOf(algorithm).get().matchPattern(needle);
+		haystack = benchmarkCaseResolved.haystack;
 	}
-
 
 	@GenerateMicroBenchmark
 	public Optional<StringMatch> testMatch() {
@@ -68,11 +69,10 @@ public class StringSearchJmhBenchmark {
 
 	public static void main(String[] args) throws RunnerException {
 		Options options = new OptionsBuilder().include(".*" + StringSearchJmhBenchmark.class.getSimpleName() + ".*")
-//				.warmupIterations(2)
-//				.measurementIterations(2)
-//				.forks(1)
-				.mode(Mode.SampleTime)
-				.build();
+		 .warmupIterations(2)
+		 .measurementIterations(2)
+		 .forks(1)
+		 .mode(Mode.SampleTime).build();
 		new Runner(options).run();
 	}
 }
